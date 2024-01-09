@@ -1,12 +1,19 @@
 A webapp that keeps the track of all the countries u have visited in a visual appealing manner using dynamic world maps
 Tech stack include 
-EJS 
-Postgre SQL 
-Node js 
-Express js 
-HTML - canvas(SVG)
+
+➢ EJS 
+
+➢ Postgre SQL 
+
+➢ Node js 
+
+➢ Express js 
+
+➢ HTML - canvas(SVG)
+
 
 #How to use it 
+
 ➤ use npm i in the desired directory to download all the dependencies in package.json
 
 
