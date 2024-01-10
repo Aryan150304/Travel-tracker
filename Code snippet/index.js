@@ -7,13 +7,17 @@ const port = 3000;
 const db = new pg.Client({
   user: "postgres",
   host: "localhost",
-  database: "",
-  password: "",
+  database: "world",
+  password: "1234fzr@",
   port: 5432,
 });
 db.connect();
+
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
+
+var count =0;
 let countries = "";
  // fetching data from visited countries 
  let result = await db.query("select country_code from visited_countries");
@@ -21,6 +25,7 @@ let countries = "";
  let array  = [];
  data.forEach(element => {
      array.push(element.country_code);
+     count++;
  });
 
 // function to capitialise initial characters of the countries
@@ -33,20 +38,23 @@ function capital(name){
 app.post("/add",async (req,res)=>{
   var country = req.body.country;
   country = capital(country);
-  console.log(country);
-  let postresult = await db.query("select country_code from countries WHERE country_name = $1",[country]);
+  let postresult = await db.query("select country_code from countries WHERE country_name LIKE $1||'%'",[country]);
   let postdata = postresult.rows;
 
   postdata.forEach(element => {
       array.push(element.country_code);
   });
+
+  console.log(array[array.length-1]);
   try {
     let insertresult = await db.query("insert into visited_countries(country_code) VALUES ($1)",[array[array.length-1]]);
     console.log(insertresult.rows);  
+    count= array.length;
+
   } catch (error) {
     console.log("HEY its an error");
+    array.pop();
   }
-
   // reddirecting to app.get with the same data
   res.redirect("/");
 })
@@ -58,7 +66,7 @@ var total;
 app.get("/", async (req, res) => {
   res.render('index.ejs',{
     countries: array,
-    total: array.length
+    total: count
   })
 });
 
