@@ -1,0 +1,57 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .background{
+            width: 100px;
+            height: 30px;  
+            margin: 10px 0px;
+            border: black 2px solid;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <% if(locals.str){ %>
+        <h1><%= str%></h1>
+        <% } %>
+         
+ <h1>You are welcome to become a new member</h1>
+ <form action="/addnewmember" method="post">
+     <label for="name">Enter your name</label>
+     <input type="text" id="name" name="name" maxlength="15">
+     <br><br>
+     <p>Enter your desired color</p>
+   
+     <input type="radio" id="red" name="color" value="red"  onchange="changeColor(this.value)">
+     <label for="red">RED</label>
+
+     <input type="radio" id="blue" name="color" value="teal"  onchange="changeColor(this.value)">
+     <label for="blue">TEAL</label>
+
+     <input type="radio" id="green" name="color" value="green"  onchange="changeColor(this.value)">
+     <label for="green">GREEN</label>
+     <input type="radio" id="pink" name="color" value="pink"  onchange="changeColor(this.value)">
+     <label for="green">PINK</label>
+     <input type="radio" id="orange" name="color" value="orange"  onchange="changeColor(this.value)">
+     <label for="green">ORANGE</label>
+
+     <div class="background">
+         <!-- <p>Selected color : </p> -->
+     </div>
+     
+     <button  type="submit">CLICK ME</button>
+
+ </form>
+ <script>
+     let bg = document.querySelector(".background");
+     function changeColor(value){
+         bg.style.backgroundColor = `${value}`;
+         bg.style.border = "none";
+     }
+ </script>
+</body>
+</html>
