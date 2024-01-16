@@ -11,6 +11,7 @@ const db = new pg.Client({
   password: "1234fzr@",
   port: 5432,
 });
+var currentname;
 
 var currentMember  = 0;
 
@@ -19,9 +20,27 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 var total;
-var count =0;
+
 let countries = "";
 var color;
+
+// whenever user confirms to delete in delete.ejs 
+app.post("/yes",async(req,res)=>{
+    try {
+        var query = await db.query("Delete from user_details WHERE user_id = $1",[currentMember]);
+        console.log(query.rows);
+        currentMember= 0;
+        res.redirect("/");
+    } catch (error) {
+        console.log(error);
+    }
+})
+
+// whenver user clicks on delete route it leads to delete .ejs
+app.post("/delete",(req,res)=>{
+    res.render('delete.ejs');
+})
+
 app.post("/newmem",(req,res)=>{
     res.render('newmember.ejs');
 })
@@ -37,8 +56,10 @@ app.post('/member',async(req,res)=>{
     try {
         let name = await db.query("Select * from user_details WHERE user_name = $1",[names]);
         currentMember = name.rows[0].user_id;
+        currentname = names;
         color = name.rows[0].color;
         console.log(currentMember);
+        console.log(currentname);
         res.redirect("/");
 
     } catch (error) {
@@ -55,6 +76,13 @@ app.post('/addnewmember',async(req,res)=>{
         // how to consider multiple users
         let insertresult = await db.query("insert into user_details(user_name, color) VALUES ($1,$2)",[name,colorvalue]);
 
+
+
+        // we have to decide current member and current name here
+        currentname = name;
+        let val = await db.query("Select user_id from user_details WHERE user_name = $1",[name]);
+        currentMember = val.rows[0].user_id;
+        color =  colorvalue;
         // so whatever the count member is that member will be showed on opening
         res.redirect("/"); 
       } catch (error) {
@@ -86,6 +114,7 @@ app.post("/add",async(req,res)=>{
 })
 
 app.get("/", async (req, res) => {
+    var count =0;
     var members;
     let array  = [];
     let userCheck = await db.query("select * from user_details");
@@ -98,11 +127,14 @@ app.get("/", async (req, res) => {
         const sqlQuery = "select user_details.user_id,user_details.user_name,user_details.color,usercountry.country_id,countries.country_code,countries.country_name from user_details  JOIN usercountry ON user_details.user_id = usercountry.user_id JOIN countries ON usercountry.country_id = countries.id WHERE user_details.user_id = $1";
         // fetching all the data of a particular user id that makes u more closes to idea of the project
         let completeDetails = [];
+       
         if(userdetails.length ==1||currentMember==0){
-            currentMember  =userdetails[userdetails.length-1].user_id;
+            currentMember  =userdetails[0].user_id;
+            currentname =userdetails[0].user_name;
             color = userdetails[0].color;
         }
         completeDetails = await db.query(sqlQuery,[currentMember]);
+         
         
         
         // now u have combined the data of the user and country so u have everything so need to perform searching as u have country code and country id
@@ -114,7 +146,8 @@ app.get("/", async (req, res) => {
             total: count,
             countries: array,
             members: userCheck.rows,
-            color: color
+            color: color,
+            currentname: currentname
         })
     }
 
