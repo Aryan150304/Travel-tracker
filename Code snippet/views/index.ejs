@@ -4,14 +4,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Travel Tracker</title>
+  <title>Travel Tracker</title><link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles/main.css">
 </head>
 
 <body>
   <% if(locals.members){ %>
     <div class="form">
-      <form action="/member" method="post" class="form">
+      <form action="/member" method="post" class="formbtns">
         <% for(var i=0;i<members.length;i++){ %>
           <label for="<%= i %>"></label>
           <input type="submit" id="<%= i %>" value ="<%= members[i].user_name%>" name="memberArray" class="memberArray" style="background-color: <%=members[i].color  %>">
@@ -20,13 +22,21 @@
     <form action="/newmem" method="post">
       <button type="submit">Add a new member</button>
     </form>
-   
+    <form action="/delete" method="post">
+     <button type="submit" id="delete">DELETE THE USER</button> 
+    </form>
+    <% if(locals.currentname){ %>
+      <p class="name">Current person: <%= currentname %></p>
+      <% } %>
     </div>
   <% } %>
-  <form action="/add" method="post">
-    <input type="text" name="country" autofocus placeholder="<%= locals.error ? error :  'Enter country name'%>">
-    <button type="submit">Add</button>
-  </form>
+  <div class="addDelete">
+    <form action="/add" method="post">
+      <input type="text" name="country" autofocus placeholder="<%= locals.error ? error :  'Enter country name'%>" class="textbox">
+      <button type="submit">Add</button>
+    </form>
+  </div>
+ 
 
   <section class="ag-canvas">
     <svg class="ag-canvas_svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -384,7 +394,9 @@
       <path id="ZW" title="Zimbabwe"
         d="M562.709,526.998L561.219,526.697L560.274,527.059L558.917,526.548L557.776,526.516L555.989,525.158L553.821,524.698L552.996,522.803L552.989,521.752L551.788,521.432L548.615,518.177L547.733,516.471L547.169,515.946L546.09,513.602L549.224,513.922L550.135,514.26L551.082,514.192L552.634,512.299L555.073,509.904L556.076,509.676L556.417,508.67L558.014,507.516L560.138,507.12L560.319,508.2L562.658,508.142L563.957,508.754L564.562,509.472L565.896,509.683L567.353,510.617L567.359,514.312L566.813,516.347L566.692,518.55L567.143,519.426L566.826,521.172L566.402,521.443L565.663,523.593z" />
     </svg>
+   
   </section>
+
   <% if (locals.total) { %>
     <h2 class="total-count">Total Countries: <%=total%>
   <% } %>
